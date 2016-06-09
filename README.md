@@ -18,3 +18,5 @@ AAAI. 2015.
 MIT
 
 # Japanese article
+
+http://qiita.com/knok/items/26224c8489ad681769c0 (Qiita)
