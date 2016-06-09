@@ -14,6 +14,7 @@ from model import LetterClassifyer
 
 def argument():
     parser = argparse.ArgumentParser()
+    parser.add_argument('mode')
     parser.add_argument('file')
     parser.add_argument('--embed', default=200, type=int)
     parser.add_argument('--vocab', default=3000, type=int)
@@ -34,6 +35,10 @@ def letter_list(fname):
             x = list(''.join(body.split()))
             x.append('</s>')
             yield x, val
+def letter_list_text(t):
+    x = list(''.join(t.split()))
+    x.append('</s>')
+    return x
 # 
 class Vocabulary:
     def __init__(self, fname):
@@ -71,6 +76,14 @@ class Vocabulary:
         with open(filename, 'w') as f:
             for l in self.i2l:
                 f.write(l + "\n")
+    @staticmethod
+    def load_from_file(filename):
+        vocab = Vocabulary(None)
+        with open(filename) as f:
+            for l in f:
+                l = l[:-1]
+                vocab.append_letter(l)
+        return vocab
 
 def forward(src_batch, t, model, is_training, vocab, xp):
     batch_size = len(src_batch)
@@ -129,9 +142,28 @@ def train(args):
         e_acc /= i
         print("total acc: %f" %  e_acc.data)
 
+def eval(args):
+    if args.use_gpu:
+        xp = cuda.cupy
+        cuda.get_device(0).use()
+    else:
+        xp = np
+    vocab = Vocabulary.load_from_file("%s.vocab" % args.model)
+    m = LetterClassifyer(args.vocab, args.embed, args.hidden)
+    chainer.serializers.load_hdf5("%s.hdf5" % args.model, m)
+    if args.use_gpu:
+        m.to_gpu
+    x_batch = [letter_list_text(args.file)]
+    output = forward(x_batch, None, m, False, vocab, xp)
+    print(output.data)
+    print("hyp: %d" % np.argmax(output.data)) # label
+
 def main():
     args = argument()
-    train(args)
+    if args.mode == 'train':
+        train(args)
+    else:
+        eval(args)
 
 if __name__ == '__main__':
     main()
