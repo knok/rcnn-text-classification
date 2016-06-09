@@ -4,8 +4,10 @@ A simple implementation of RCNN Text Classification with chainer.
 
 # How to run
 
+```
 $ python train.py train data.txt
 $ python train.py eval "今日はいい天気"
+```
 
 # Reference
 [Recurrent convolutional neural networks for text classification](http://dl.acm.org/citation.cfm?id=2886636)
@@ -15,4 +17,4 @@ AAAI. 2015.
 # License
 MIT
 
-# Japanese description
+# Japanese article
