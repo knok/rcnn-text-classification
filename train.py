@@ -152,7 +152,7 @@ def eval(args):
     m = LetterClassifyer(args.vocab, args.embed, args.hidden)
     chainer.serializers.load_hdf5("%s.hdf5" % args.model, m)
     if args.use_gpu:
-        m.to_gpu
+        m.to_gpu()
     x_batch = [letter_list_text(args.file)]
     output = forward(x_batch, None, m, False, vocab, xp)
     print(output.data)
