@@ -11,18 +11,14 @@ class LetterClassifyer(Chain):
     def __init__(self, vocab_size, embed_size, hidden_size, class_size=2):
         super(LetterClassifyer, self).__init__(
             embed = L.EmbedID(vocab_size, embed_size),
-            fwd = L.LSTM(embed_size, hidden_size),
-            bwd = L.LSTM(embed_size, hidden_size),
             fc1 = L.Linear(embed_size*2, hidden_size*2),
             fc2 = L.Linear(hidden_size*2, class_size)
             )
     def forward(self, x_list):
-        self.fwd.reset_state()
         cl_list = []
         for x in x_list:
             wvec = self.embed(x)
             cl_list.append(wvec)
-        self.bwd.reset_state()
         cr_list = []
         for x in reversed(x_list):
             wvec = self.embed(x)
