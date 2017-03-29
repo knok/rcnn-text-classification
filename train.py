@@ -21,7 +21,7 @@ def argument():
     parser.add_argument('--hidden', default=1000, type=int)
     parser.add_argument('--epoch', default=100, type=int)
     parser.add_argument('--model', default="model")
-    parser.add_argument('--classes', default=2)
+    parser.add_argument('--classes', default=2, type=int)
     parser.add_argument('--use-gpu', action='store_true', default=False)
     parser.add_argument('--unchain', action='store_true', default=False)
     args = parser.parse_args()
@@ -107,7 +107,7 @@ def train(args):
     else:
         xp = np
     vocab = Vocabulary(args.file)
-    m = LetterClassifyer(args.vocab, args.embed, args.hidden)
+    m = LetterClassifyer(args.vocab, args.embed, args.hidden, args.classes)
     m.zerograds()
     if args.use_gpu:
         m.to_gpu()
